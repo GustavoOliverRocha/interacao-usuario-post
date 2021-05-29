@@ -96,7 +96,10 @@ class PostagemModel extends ConectarBanco
 		try
 		{
 			if($this->con->exec($st_query) > 0)
+			{
+
 				return true;
+			}
 			else
 				return false;
 
@@ -118,7 +121,7 @@ class PostagemModel extends ConectarBanco
 		{
 			if($this->con->exec($st_query) > 0 && $this->calcularCurtidas())
 			{
-				echo $this->loadById($this->id)->getTotLike() ;
+				
 				return true;
 			}
 			else
@@ -159,7 +162,7 @@ class PostagemModel extends ConectarBanco
 		}
 	}
 
-	public function calcularCurtidas()
+	private function calcularCurtidas()
 	{
 		$total = "(SELECT COUNT(nr_like) FROM interacao_post WHERE fk_cd_postagem = $this->id and nr_like = 1)";
 		$st_query = "UPDATE tb_postagem set tot_like = $total WHERE cd_postagem = $this->id;";
@@ -183,7 +186,7 @@ class PostagemModel extends ConectarBanco
 	public function listar()
 	{
 		$v_postagem = [];
-		$st_query = "SELECT nm_usuario,cd_postagem,nm_conteudo,tot_like FROM tb_postagem JOIN tb_usuario on tb_usuario.cd_usuario = tb_postagem.fk_cd_usuario;";
+		$st_query = "SELECT nm_usuario,cd_postagem,nm_conteudo,tot_like FROM tb_postagem JOIN tb_usuario on tb_usuario.cd_usuario = tb_postagem.fk_cd_usuario ORDER by cd_postagem desc;";
 		try
 		{
 			$dados = $this->con->query($st_query);
@@ -252,14 +255,3 @@ class PostagemModel extends ConectarBanco
 	}
 
 }
-$p = new PostagemModel();
-if(isset($_GET['id']))
-{
-$p->setId($_GET['id']);
-$p->setIdUser($_GET['id_user']);
-echo $_GET['sonic'];
-//$p->setNum_like($_GET['like']);
-$p->curtirPost();
-}
-
-?>
