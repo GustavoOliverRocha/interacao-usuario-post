@@ -4,11 +4,11 @@ if(file_exists('./Models/PostagemModel.php'))
 else
 {
 	/*Por algum motivo quando o Ajax executa um script PHP
-	ele não reconheçe 'um ponto' como um retorno de diretorio/pasta
-	e sim 'dois pontos'*/
+	ele não reconheçe 'um ponto' como um recuo de diretorio/pasta
+	mas sim 'dois pontos'*/
 	require_once '../Models/PostagemModel.php';
 }
-
+require_once './Libs/ViewRender.php';
 class PostagemController
 {
 	function __construct()
@@ -18,9 +18,17 @@ class PostagemController
 
 	public function listarPostagens()
 	{
-		$obj_post = new PostagemModel();
-		$obj_post->setId(4);
-		return $obj_post->listar();
+		/*esse if é para impedir que acessem esse metodo pelo ajax*/
+		if(count($_POST) == 0)
+		{
+			$obj_view = new ViewRender('./Views/mainPost.phtml');
+			$obj_post = new PostagemModel();
+			$obj_post->setId(4);
+			$sonic = $obj_post->listar();
+			$obj_view->setDados(array('teste' => $sonic  ));
+			$obj_view->showPage();
+			//return $obj_post->listar();
+		}
 			
 	}
 
@@ -37,6 +45,7 @@ class PostagemController
 				echo "<div class=\"alert alert-success\" role=\"alert\">
   							Postagem postada com sucesso
 						</div>";
+					//	header("Location: ?classe=Postagem&metodo=listarPostagens");
 			}
 			else
 			{
@@ -66,6 +75,6 @@ class PostagemController
 		}
 	}
 }
-$pc = new PostagemController();
+/*$pc = new PostagemController();
 //$pc->manterPostagem();
-$pc->curtirPostagem();
+$pc->curtirPostagem();*/

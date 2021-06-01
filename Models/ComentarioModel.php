@@ -51,7 +51,7 @@ class ComentarioModel extends ConectarBanco
 
 	public function save()
 	{
-		if(isset($this->id))
+		if(!is_null($this->id))
 			$st_query = "UPDATE comentario set nm_comentario = '$this->comentario' WHERE cd_comentario = $this->id;";
 		else
 			$st_query = "INSERT INTO comentario(nm_comentario,fk_cd_usuario,fk_cd_postagem)VALUES('$this->nm_comentario',$this->user_id,$this->post_id);";
@@ -74,7 +74,7 @@ class ComentarioModel extends ConectarBanco
 	public function exibir()
 	{
 		$v_comentarios = [];
-		$st_query = "SELECT cd_comentario,nm_comentario FROM comentarios;";
+		$st_query = "SELECT cd_comentario,nm_comentario FROM comentarios WHERE id_comentrios = $this->id;";
 
 		try
 		{

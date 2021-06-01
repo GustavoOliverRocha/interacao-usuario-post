@@ -237,7 +237,7 @@ class PostagemModel extends ConectarBanco
 	public function loadById($id)
 	{
 		$st_query = "SELECT * FROM tb_postagem WHERE cd_postagem = $id";
-				try
+		try
 		{
 			$dados = $this->con->query($st_query);
 			$registros = $dados->fetchObject();
