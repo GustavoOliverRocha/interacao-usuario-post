@@ -9,6 +9,7 @@ else
 	require_once '../Models/PostagemModel.php';
 }
 require_once './Libs/ViewRender.php';
+require_once './Models/ComentarioModel.php';
 class PostagemController
 {
 	function __construct()
@@ -23,9 +24,13 @@ class PostagemController
 		{
 			$obj_view = new ViewRender('./Views/mainPost.phtml');
 			$obj_post = new PostagemModel();
-			$obj_post->setId(4);
-			$sonic = $obj_post->listar();
-			$obj_view->setDados(array('teste' => $sonic  ));
+			//$obj_comment = new ComentarioModel();
+			if(DataValidator::isLogado())
+				$obj_post->setIdUser($_SESSION['id_user']);
+			//$obj_comment->setId(4);
+			$v_posts = $obj_post->listar();
+			//$shadow = $obj_comment->exibir();
+			$obj_view->setDados(array('postagens' => $v_posts  ));
 			$obj_view->showPage();
 			//return $obj_post->listar();
 		}
@@ -35,10 +40,10 @@ class PostagemController
 	public function manterPostagem()
 	{
 		
-		if(isset($_POST['id_user'],$_POST['nm_postagem']))
+		if(isset($_POST['nm_postagem']) && DataValidator::isLogado())
 		{
 			$obj_post = new PostagemModel();
-			$obj_post->setIdUser($_POST['id_user']);
+			$obj_post->setIdUser($_SESSION['id_user']);
 			$obj_post->setConteudo($_POST['nm_postagem']);
 			if($obj_post->save())
 			{
@@ -59,11 +64,11 @@ class PostagemController
 
 	public function curtirPostagem()
 	{
-		if(isset($_POST['id_post'],$_POST['id_user']))
+		if(isset($_POST['id_post']) && DataValidator::isLogado())
 		{
 			$obj_post = new PostagemModel();
 			$obj_post->setId($_POST['id_post']);
-			$obj_post->setIdUser($_POST['id_user']);
+			$obj_post->setIdUser($_SESSION['id_user']);
 			//echo $_GET['sonic'];
 			//$p->setNum_like($_GET['like']);
 			if($obj_post->curtirPost())

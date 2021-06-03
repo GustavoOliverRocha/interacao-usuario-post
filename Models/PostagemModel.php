@@ -1,21 +1,24 @@
 <?php
+
 require_once 'ConectarBanco.php';
 require_once 'UsuarioModel.php';
+require_once 'ComentarioModel.php';
 class PostagemModel extends ConectarBanco
 {
 	private $id;
 	private $conteudo;
-	/*private $media;
-	private $nota;*/
 	private $tot_like;
 	private $id_user;
-	private $usuario;
 	private $num_like;
+	private $usuario;
+	private $comentarios;
+	private $comment_post;
 
 	function __construct()
 	{
 		parent::__construct();
 		$this->usuario = new UsuarioModel();
+		$this->comentarios = new ComentarioModel();
 	}
 	public function getId()
 	{
@@ -26,16 +29,6 @@ class PostagemModel extends ConectarBanco
 	{
 		$this->id = $id;
 	}
-
-	/*public function getNota()
-	{
-		return $this->nota;
-	}
-
-	public function setNota($nota)
-	{
-		$this->nota = $nota;
-	}*/
 
 	public function getNum_like()
 	{
@@ -78,16 +71,20 @@ class PostagemModel extends ConectarBanco
 	{
 		return $this->usuario;
 	}
-
-	/*public function getComment()
+	public function getComentario()
 	{
-		return $this->comment;
+		return $this->comentarios;
 	}
 
-	public function setComment($comment)
+	public function setCommentPost(Array $id)
 	{
-		$this->comment = $comment;
-	}*/
+		$this->comment_post = $id;
+	}
+
+	public function getCommentPost()
+	{
+		return $this->comment_post;
+	}
 
 	public function save()
 	{
@@ -186,11 +183,12 @@ class PostagemModel extends ConectarBanco
 	public function listar()
 	{
 		$v_postagem = [];
-		$st_query = "SELECT nm_usuario,cd_postagem,nm_conteudo,tot_like FROM tb_postagem JOIN tb_usuario on tb_usuario.cd_usuario = tb_postagem.fk_cd_usuario ORDER by cd_postagem desc;";
+		$st_query = "SELECT cd_postagem,nm_conteudo,tot_like,nm_usuario FROM tb_postagem JOIN tb_usuario on tb_usuario.cd_usuario = tb_postagem.fk_cd_usuario ORDER by cd_postagem desc;";
 		try
 		{
 			$dados = $this->con->query($st_query);
-			$dados2 = $this->postsCurtidos();
+			$dados_curtidos = $this->postsCurtidos();
+
 			while($registros = $dados->fetchObject())
 			{
 				$obj_post = new PostagemModel();
@@ -198,10 +196,12 @@ class PostagemModel extends ConectarBanco
 				$obj_post->setConteudo($registros->nm_conteudo);
 				$obj_post->setTotLike($registros->tot_like);
 				$obj_post->usuario->setNome($registros->nm_usuario);
-				foreach ($dados2 as $key) {
-				if($obj_post->id == $key->getId() && $key->getNum_like() == 1)
-					$obj_post->setNum_like($key->getNum_like());
-				}
+
+				foreach ($dados_curtidos as $p)
+					if($obj_post->id == $p->getId() && $p->getNum_like() == 1)
+						$obj_post->setNum_like($p->getNum_like());
+
+				$obj_post->setCommentPost($this->comentarios->exibir($registros->cd_postagem));
 				array_push($v_postagem, $obj_post);
 			}
 		}
@@ -215,7 +215,7 @@ class PostagemModel extends ConectarBanco
 	public function postsCurtidos()
 	{
 		$v_postagem = [];
-		$st_query = "SELECT nr_like,fk_cd_postagem FROM interacao_post JOIN tb_usuario on tb_usuario.cd_usuario = interacao_post.fk_cd_usuario WHERE fk_cd_usuario = 6 and nr_like = 1;";
+		$st_query = "SELECT nr_like,fk_cd_postagem FROM interacao_post JOIN tb_usuario on tb_usuario.cd_usuario = interacao_post.fk_cd_usuario WHERE fk_cd_usuario = $this->id_user and nr_like = 1;";
 		try
 		{
 			$dados = $this->con->query($st_query);

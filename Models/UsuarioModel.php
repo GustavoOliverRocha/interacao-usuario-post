@@ -76,14 +76,24 @@ class UsuarioModel extends ConectarBanco
 
 	public function logar()
 	{
-		$st_query = "SELECT * FROM tb_usuario WHERE nm_usuario='$this->nome' and senha_usuario = '$this->senha'";
+		$st_query = "SELECT * FROM tb_usuario WHERE nm_usuario = '$this->nome' and senha_usuario = '$this->senha'";
 		try
 		{
 			$dados = $this->con->query($st_query);
-			if(!$dados->fetchObject())
+			$registros = $dados->fetchObject();
+			//var_dump($registros);
+			if(!$registros)
 				return false;
-			else
+
+			else if($this->nome == $registros->nm_usuario && 
+						$this->senha == $registros->senha_usuario)
+			{
+				$this->id = $registros->cd_usuario;
+				$this->nome = $registros->nm_usuario;
 				return true;
+			}
+			else
+				return false;
 		}
 		catch(PDOException $error)
 		{

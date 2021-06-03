@@ -1,5 +1,5 @@
 <?php
-
+require_once './Libs/DataValidator.php';
 class RouteController
 {
 	private $classeController;
@@ -7,8 +7,8 @@ class RouteController
 
 	private function setRoutes()
 	{
-		$this->classeController = isset($_GET['classe']) ? $_GET['classe'] :'index';
-		$this->rotaMetodo = isset($_GET['metodo']) ? $_GET['metodo'] : 'index';
+		$this->classeController = isset($_GET['classe']) ? $_GET['classe'] :'Index';
+		$this->rotaMetodo = isset($_GET['metodo']) ? $_GET['metodo'] : 'indexRedirect';
 	}
 
 	public function importController()
