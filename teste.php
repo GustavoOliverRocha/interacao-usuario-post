@@ -1,4 +1,32 @@
-<!DOCTYPE html>
+<?php
+require_once 'Models/ConectarBanco.php';
+require_once 'Models/PostagemModel.php';
+class teste extends ConectarBanco
+{
+
+  function __construct()
+  {
+    parent::__construct();
+  }
+
+  public function aaa()
+  {
+    /*$st_query = "SELECT * FROM tb_usuario where cd_usuario = 2";
+    $dados = $this->con->query($st_query);
+    $sonic = $dados->fetchObject();
+    echo $sonic->nm_usuario;*/
+    $u = new PostagemModel();
+    $asuna = $u->listar();
+  }
+}
+$u = new PostagemModel();
+$u->setIdUser(2);
+$e = $u->listar();
+echo $e[0]->getConteudo();
+?>
+
+
+<!--<!DOCTYPE html>
 <html>
 <head>
 	<title></title>

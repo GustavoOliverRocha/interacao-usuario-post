@@ -93,10 +93,7 @@ class PostagemModel extends ConectarBanco
 	/*Recebera o conteudo(o texto), o total de like que por padrao será 0 e a id do usuario que postou */
 	public function save()
 	{
-		if(!is_null($this->id))
-			$st_query = "UPDATE tb_postagem set nm_conteudo = '$this->conteudo' WHERE cd_postagem = $this->id";
-		else
-			$st_query = "INSERT INTO tb_postagem(nm_conteudo,tot_like,fk_cd_usuario) VALUES ('$this->conteudo',0,$this->id_user);";
+		$st_query = "INSERT INTO tb_postagem(nm_conteudo,tot_like,fk_cd_usuario) VALUES ('$this->conteudo',0,$this->id_user);";
 
 		try
 		{
@@ -191,10 +188,9 @@ class PostagemModel extends ConectarBanco
 	public function listar()
 	{
 		$v_postagem = [];
-		$st_query = "SELECT cd_postagem,nm_conteudo,tot_like,nm_usuario,fk_cd_usuario FROM tb_postagem JOIN tb_usuario on tb_usuario.cd_usuario = tb_postagem.fk_cd_usuario ORDER by cd_postagem desc;";
+		$st_query = "SELECT cd_postagem,nm_conteudo,tot_like,nm_usuario FROM tb_postagem JOIN tb_usuario on tb_usuario.cd_usuario = tb_postagem.fk_cd_usuario ORDER by cd_postagem desc;";
 		try
 		{
-
 			$dados = $this->con->query($st_query);
 
 			//Array contendo os objetos que identificam se o post foi curitdo pelo usuario logado
@@ -205,7 +201,6 @@ class PostagemModel extends ConectarBanco
 				$obj_post = new PostagemModel();
 				$obj_post->setId($registros->cd_postagem);
 				$obj_post->setConteudo($registros->nm_conteudo);
-				$obj_post->setIdUser($registros->fk_cd_usuario);
 				$obj_post->setTotLike($registros->tot_like);
 				$obj_post->usuario->setNome($registros->nm_usuario);
 
@@ -213,7 +208,7 @@ class PostagemModel extends ConectarBanco
 				foreach ($dados_curtidos as $p)
 					if($obj_post->id == $p->getId() && $p->getNum_like() == 1)
 						$obj_post->setNum_like($p->getNum_like());
-				//O PROBLEMA ESTA NOS COMENTARIOS	
+					
 				//colocando os comentarios deste post
 				$obj_post->setCommentPost($this->comentarios->exibir($registros->cd_postagem));
 				
@@ -226,16 +221,14 @@ class PostagemModel extends ConectarBanco
 		}
 		return $v_postagem;
 	}
-
 	//Este metodo servirá para mostrar se a postagem ja foi curtida ou não pelo usuario logado
 	//Ele irá selecionar a id da postagem e o numero do like(0 para nao curtido e 1 para curtido)
 	//e essa chave estrangeira será a id do usuario logado
 	//ele retornara um array com objetos
-	private function postsCurtidos()
+	public function postsCurtidos()
 	{
 		$v_postagem = [];
 		$st_query = "SELECT nr_like,fk_cd_postagem FROM interacao_post JOIN tb_usuario on tb_usuario.cd_usuario = interacao_post.fk_cd_usuario WHERE fk_cd_usuario = $this->id_user and nr_like = 1;";
-
 		try
 		{
 			$dados = $this->con->query($st_query);
@@ -255,21 +248,7 @@ class PostagemModel extends ConectarBanco
 	}
 
 	/*$st_query = "SELECT nr_like FROM interacao_post JOIN tb_usuario on tb_usuario.cd_usuario = interacao_post.fk_cd_usuario WHERE fk_cd_postagem = $this->id and fk_cd_usuario = $this->usuario->getId();"*/
-	public function delete()
-	{
-		$st_query = "DELETE FROM tb_postagem WHERE cd_postagem = $this->id";
-		try
-		{
-			if($this->con->exec($st_query))
-				return true;
-			else
-				return false;
-		}
-		catch(PDOException $error)
-		{
-			echo "ERROR:Camada: Model<br>Arquivo: ".__FILE__."<br>Metodo: ".__FUNCTION__."<br>".$error;
-		}
-	}
+
 	//Metodo para selecionar as informações de um pot especifico
 	public function loadById($id)
 	{

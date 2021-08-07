@@ -1,0 +1,17 @@
+			<div class="row row-cols-auto">
+				<div class="col">
+
+					<!--Dependendo se o Like tiver ativo ou não ele vai renderizar uma das aberturas da tag <button/> que é a do Like-->
+					<?php if($postagem->getNum_Like() == 1){?>
+					<button class="btn btn-outline-primary curtir active" id="curtir<?php echo $postagem->getId();?>" data-bs-toggle="tooltip" data-bs-placement="top" title="Usuarios" value="<?php echo $postagem->getId();?>">
+
+					<?php }else{ ?>
+					<button class="btn btn-outline-primary curtir" id="curtir<?php echo $postagem->getId();?>" data-bs-toggle="tooltip" data-bs-placement="top" title="Usuarios" value="<?php echo $postagem->getId();?>">
+					<?php }?>
+
+						<i class="bi-hand-thumbs-up-fill" ></i>
+						<?php echo $postagem->getTotLike(); ?>
+
+					</button>
+				</div>
+			</div>

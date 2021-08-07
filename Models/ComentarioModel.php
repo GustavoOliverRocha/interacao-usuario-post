@@ -77,11 +77,13 @@ class ComentarioModel extends ConectarBanco
 
 		return false;
 	}
-	
+	//Pegando os comentarios de uma postagem especifica o parametro desse metodo sera a id do post
+	//o id,o texto,o nome do usuario que escreveu
+	//
 	public function exibir($id)
 	{
 		$v_comentarios = [];
-		$st_query = "SELECT cd_comentario, nm_comentario, nm_usuario FROM comentarios JOIN tb_usuario on tb_usuario.cd_usuario = comentarios.fk_cd_usuario WHERE fk_cd_postagem = $id;";
+		$st_query = "SELECT cd_comentario, nm_comentario, nm_usuario FROM comentarios JOIN tb_usuario on tb_usuario.cd_usuario = comentarios.fk_cd_usuario WHERE fk_cd_postagem = $id ORDER by cd_comentario desc;";
 
 		try
 		{
@@ -103,5 +105,30 @@ class ComentarioModel extends ConectarBanco
         }
         return $v_comentarios;
 
+	}
+
+	public function atualizarComentarios()
+	{
+		$i = 0;
+		$v_comentarios = $this->exibir($this->post_id);
+		foreach($v_comentarios as $c)
+		{
+			if($i == 5)
+				break;
+			echo "<div class=\"row\">
+					<div class=\"col-1\">
+						<img src=\"https://blogtectoy.com.br/wp-content/uploads/2020/02/sonic-the-hedgehog-2020-3.jpg\" width=\"50px\" height=\"50px\">
+					</div>
+					<div class=\"col-10\">
+							<div>
+						<h6 id=\"nomeuser\">".$c->getUsuario()->getNome()."</h6>
+				
+						<p> ".$c->getComentario(). "</p>
+							</div>
+					</div>
+
+				</div>";
+			$i++;
+		}
 	}
 }

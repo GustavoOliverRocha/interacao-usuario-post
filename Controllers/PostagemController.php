@@ -12,27 +12,22 @@ require_once './Libs/ViewRender.php';
 require_once './Models/ComentarioModel.php';
 class PostagemController
 {
-	function __construct()
-	{
-
-	}
 
 	public function listarPostagens()
 	{
-		/*esse if é para impedir que acessem esse metodo pelo ajax*/
+		//esse if é para impedir que acessem esse metodo pelo ajax
 		if(count($_POST) == 0)
 		{
 			$obj_view = new ViewRender('./Views/mainPost.phtml');
 			$obj_post = new PostagemModel();
-			//$obj_comment = new ComentarioModel();
+
 			if(DataValidator::isLogado())
 				$obj_post->setIdUser($_SESSION['id_user']);
-			//$obj_comment->setId(4);
+
 			$v_posts = $obj_post->listar();
-			//$shadow = $obj_comment->exibir();
+
 			$obj_view->setDados(array('postagens' => $v_posts  ));
 			$obj_view->showPage();
-			//return $obj_post->listar();
 		}
 			
 	}
@@ -43,14 +38,20 @@ class PostagemController
 		if(isset($_POST['nm_postagem']) && DataValidator::isLogado())
 		{
 			$obj_post = new PostagemModel();
+			$obj_post2 = new PostagemModel();
+			if(isset($_REQUEST['id_postagem']))
+			{
+				$obj_post->setId($_REQUEST['id_postagem']);
+				$obj_post2->loadById($_REQUEST['id_postagem']);
+			}
+
 			$obj_post->setIdUser($_SESSION['id_user']);
-			$obj_post->setConteudo($_POST['nm_postagem']);
-			if($obj_post->save())
+			$obj_post->setConteudo(chop($_POST['nm_postagem']," "));
+			if($obj_post->save() && $obj_post2->getIdUser() == $_SESSION['id_user'])
 			{
 				echo "<div class=\"alert alert-success\" role=\"alert\">
   							Postagem postada com sucesso
 						</div>";
-					//	header("Location: ?classe=Postagem&metodo=listarPostagens");
 			}
 			else
 			{
@@ -61,7 +62,17 @@ class PostagemController
 		}
 
 	}
+	public function mostrarPost()
+	{
+		if(isset($_REQUEST['id_postagem']) && DataValidator::isLogado())
+		{
+			$obj_post = new PostagemModel();
+			$obj_post->loadById($_REQUEST['id_postagem']);
 
+			echo $obj_post->getId().','.$obj_post->getConteudo();
+
+		}
+	}
 	public function curtirPostagem()
 	{
 		if(isset($_POST['id_post']) && DataValidator::isLogado())
@@ -80,6 +91,3 @@ class PostagemController
 		}
 	}
 }
-/*$pc = new PostagemController();
-//$pc->manterPostagem();
-$pc->curtirPostagem();*/

@@ -1,5 +1,8 @@
 <?php 
 require_once 'ConectarBanco.php';
+/*
+Classe responsavel pelo CRUD e o login do Usuario
+*/
 class UsuarioModel extends ConectarBanco
 {
 	private $id;
@@ -46,7 +49,6 @@ class UsuarioModel extends ConectarBanco
 		try
 		{
 			$dados = $this->con->query($st_query);
-			//var_dump($dados);
 				/**
 				 *Toda vez que o while checar a condição $registros vai receber o Objeto
 				 *Ao $dados->fetchObject() ser atribuido ele está 
@@ -70,18 +72,17 @@ class UsuarioModel extends ConectarBanco
 		}
 		catch(PDOException $error)
 		{
-			echo "ERROR: ".$error;
+			echo "ERROR: UsuarioModel,metodo: listar() <br>".$error;
 		}
 	}
 
 	public function logar()
 	{
-		$st_query = "SELECT * FROM tb_usuario WHERE nm_usuario = '$this->nome' and senha_usuario = '$this->senha'";
+		$st_query = "SELECT * FROM tb_usuario WHERE nm_usuario = '$this->nome' and senha_usuario = '$this->senha';";
 		try
 		{
 			$dados = $this->con->query($st_query);
 			$registros = $dados->fetchObject();
-			//var_dump($registros);
 			if(!$registros)
 				return false;
 

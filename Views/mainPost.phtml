@@ -1,6 +1,7 @@
 <?php
-$v_posts = $this->getDados();
-$homura = $v_posts['postagens'];
+	$v_posts = $this->getDados();
+	$homura = $v_posts['postagens'];
+
 ?>
 <!DOCTYPE html>
 <html>
@@ -18,11 +19,17 @@ $homura = $v_posts['postagens'];
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
 	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
 </head>
+
+
 <body>
-	<?php require_once 'Templates/navbar.php'; ?>
+<?php require_once 'Templates/navbar.php'; ?>
 <div id="success"></div>
-<div class="container">
+
+<div class="container" id="main">
+	<!-- Contendo toda a pagina -->
 	<div class="col-8">
+
+		<!-- Div para manterPostagem -->
 		<div class="row " id="user_insert_post">
 			<div class="col-1">
 				<img src="https://blogtectoy.com.br/wp-content/uploads/2020/02/sonic-the-hedgehog-2020-3.jpg" width="50px" height="50px">
@@ -33,145 +40,138 @@ $homura = $v_posts['postagens'];
 				<button id="postar" class="btn btn-primary">Postar</button>
 			</div>
 		</div>
+		<!-- Div para manterPostagem -->
 
+<!-- Renderização das Postagens junto com os Comentarios-->
 <?php foreach ($homura as $postagem) { ?>
-		<div class="row">
-			<div class="row">
-				<div class="col-1"><img src="https://blogtectoy.com.br/wp-content/uploads/2020/02/sonic-the-hedgehog-2020-3.jpg" width="50px" height="50px">
-				</div>
-				<div class="col-1">
-					<h6 id="nomeuser">
-						<?php echo $postagem->getUsuario()->getNome();?>
-					</h6>
-				</div>
-			</div>
 
+		<div class="row">
+
+			<!-- Div da imagem e o nome de usuario no post-->
+			<?php require "Templates/post_header.php"; ?>
+
+			<!--Conteudo do Post -->
 			<div class="row">
 				<p><?php echo $postagem->getConteudo(); ?></p>	
 			</div>
 
-			<div class="row row-cols-auto">
-				<div class="col">
-					<!--Dependendo se o Like tiver ativo ou não ele vai renderizar uma das aberturas da tag button que é a do Like-->
-	<?php if($postagem->getNum_Like() == 1){?>
-					<button class="btn btn-outline-primary curtir active" id="curtir<?php echo $postagem->getId();?>" data-bs-toggle="tooltip" data-bs-placement="top" title="Usuarios" value="<?php echo $postagem->getId();?>">
-	<?php }else{ ?>
-					<button class="btn btn-outline-primary curtir" id="curtir<?php echo $postagem->getId();?>" data-bs-toggle="tooltip" data-bs-placement="top" title="Usuarios" value="<?php echo $postagem->getId();?>">
-	<?php }?>
-						<i class="bi-hand-thumbs-up-fill" ></i>
-						<?php echo $postagem->getTotLike(); ?>
-					</button>
-				</div>
-			</div>
-			<div class="row">
-				<textarea class=" comment" cols="5" rows="5" id="comment" name="comment"></textarea>
-			</div>
-			<div class="row">
-				<div class="col-1 right">
-					<button class="btn btn-outline-primary comentar" value="<?php echo $postagem->getId(); ?>">Comentar</button>
-				</div>
-			</div>
-	<?php $comentarios = $postagem->getCommentPost(); ?>
+			<!-- Div do Botão de Curtida-->
+			<?php require "Templates/like_Post.phtml"; ?>
 
-	<?php for($i=0; $i<5; $i++) { 
-			if(isset($comentarios[$i])){
-	?>			
-	 		<div class="row">
-				<div class="col-1">
-					<img src="https://blogtectoy.com.br/wp-content/uploads/2020/02/sonic-the-hedgehog-2020-3.jpg" width="50px" height="50px">
-				</div>
-				<div class="col-10">
-					<div class="">
-					<h6 id="nomeuser"><?php echo $comentarios[$i]->getUsuario()->getNome();?></h6>
-					
-					<p> <?php echo $comentarios[$i]->getComentario(); ?> </p>
-					</div>
-				</div>
+			<!--Area de Inserção do Comentario -->
+			<?php require "Templates/comment_Post.phtml"; ?>
 
-			</div>
-			<?php }?>
-	<?php } ?>
-		</div>
-		<div class="row"><button type="button" class="btn btn-primary mostrarComments" value="<?php echo $postagem->getId(); ?>"  data-toggle="modal" data-target="#exampleModal">Mostrar Mais</button></div>
-<?php echo "<br><br><hr>";} ?>
-	</div>	
-</div>
-<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-scrollable" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body" id="fullComment">
+		<?php echo "<br><hr><br><br>";} ?>
+		</div>	
+	</div>
 
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
-      </div>
-    </div>
-  </div>
-</div>
+<?php require_once "Templates/modalPost.php"; ?>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
 <script type="text/javascript">
+
 	$('.curtir').click(function(){
-    	var id_post = $(this).val();
-    	var str = document.getElementById("curtir" + id_post).className;
-    	var teste = str.substr(str.indexOf("active"));
+    	let id_post = $(this).val();
+    	let str = document.getElementById("curtir" + id_post).className;
+    	let teste = str.substr(str.indexOf("active"));
 
           $.ajax({
           		type:'POST',
                 url: '?classe=Postagem&metodo=curtirPostagem',
                 data: {
-                	id_post:$(this).val(),
-                	id_user: 6
+                	id_post:$(this).val()
                 },
-                success: function (result) {
+                success: function (result){
                 	if(result != '')
                 	{
-                		                    $("#curtir" + id_post).html("<i class=\"bi-hand-thumbs-up-fill\" ></i>&nbsp"+result);
-                   if(teste === "active")
-                   		$("#curtir" + id_post).removeClass('active');
-                   	else
-                   		$("#curtir" + id_post).addClass('active');
+                		$("#curtir" + id_post).html("<i class=\"bi-hand-thumbs-up-fill\" ></i>&nbsp"+result);
+		                if(teste === "active")
+		                   	$("#curtir" + id_post).removeClass('active');
+		                else
+		                   	$("#curtir" + id_post).addClass('active');
                 	}
 
                 }
             });
 	});
+
 	$('#postar').click(function(){
 		$.ajax({
 			type:'POST',
 			url: '?classe=Postagem&metodo=manterPostagem',
 			data:{
-				id_user:3,
 				nm_postagem:$("#postagem").val()
 			},
 			success: function(result)
 			{
 				if(result != '')
+					location.reload();//document.getElementById('success').innerHTML = result;
+				else if(result == 'false')
 					document.getElementById('success').innerHTML = result;
 			}
 		});
 	});
+$('.editarPostagem').click(function(){
+	let id_post = $(this).val();
+	let val;
+	let content;
+	console.log(id_post);
+			$.ajax({
+			type:'POST',
+			url: '?classe=Postagem&metodo=mostrarPost',
+			data:{
+				id_postagem:id_post
+			},
+			success: function(result)
+			{
+				if(result != '')
+				{
+					//location.reload();//document.getElementById('success').innerHTML = result;
+					//$('#ppp').append(result);
+					val = result.substr(0,result.indexOf(","));
+					content = result.substr(result.indexOf(",")+1,result.length).trim();
+					document.getElementById("postEditavel").value = content;
+					document.getElementById("updatePost").value = val;
+					//$("#updatePost").val() = val;
+				}
+				else if(result == 'false')
+					document.getElementById('success').innerHTML = result;
+			}
+		});
 
-	$('.comentar').click(function(){
+});
+	$('#updatePost').click(function(){
 		$.ajax({
 			type:'POST',
-			url: '?classe=Comentario&metodo=manterComentario',
+			url: '?classe=Postagem&metodo=manterPostagem&id_postagem=' + $(this).val(),
 			data:{
-				//id_user:7,
-				id_post: $(this).val(),
-				comment: $(".comment").val() ,
+				nm_postagem:$("#postEditavel").val()
 			},
 			success: function(result)
 			{
 				if(result != '')
 					document.getElementById('success').innerHTML = result;
+				else if(result == 'false')
+					document.getElementById('success').innerHTML = result;
+			}
+		});
+	});
+	$('.comentar').click(function(){
+		let id_post = $(this).val();
+		$.ajax({
+			type:'POST',
+			url: '?classe=Comentario&metodo=manterComentario',
+			data:{
+				id_post: id_post,
+				comment: $("#comment"+ id_post ).val(),
+			},
+			success: function(result)
+			{
+				if(result != '')
+				{	
+					document.getElementById('comentariosPost'+ id_post).innerHTML = "";
+					document.getElementById('comentariosPost'+ id_post).innerHTML = result;
+				}
 			}
 
 		});
@@ -187,16 +187,8 @@ $homura = $v_posts['postagens'];
 			},
 			success:function(result)
 			{
-				if(result != ''){
-
+				if(result != '')
 					document.getElementById('fullComment').innerHTML = result;
-					/*var myModal = document.getElementById('myModal')
-					var myInput = document.getElementById('myInput')
-
-					myModal.addEventListener('shown.bs.modal', function () {
-  						myInput.focus();
-  					});*/
-				}
 			}
 		});
 	});
