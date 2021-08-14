@@ -3,7 +3,11 @@ require_once 'ConectarBanco.php';
 require_once 'UsuarioModel.php';
 require_once 'ComentarioModel.php';
 
-/*Model responsavel pelas postagens*/
+/*Model responsavel pelas postagens
+* $usuario(relação de agregação):objeto responsavel por conseguir a informaçoes do usuario que postou
+* $comentarios: serve para receber os comentarios que aparecerão no post
+* $comment_post: Responsavel pelo vetor contendo os objetos do post
+*/
 class PostagemModel extends ConectarBanco
 {
 	private $id;
@@ -91,6 +95,10 @@ class PostagemModel extends ConectarBanco
 
 	//Metodo de inserção da postagem
 	/*Recebera o conteudo(o texto), o total de like que por padrao será 0 e a id do usuario que postou */
+	/**
+	*	Metodo de inserção da postagem
+	*	Será inserido o conteudo(texto do post),o total de likes(padrão 0),e a id do usuario que postou
+	*/
 	public function save()
 	{
 		if(!is_null($this->id))
@@ -113,8 +121,10 @@ class PostagemModel extends ConectarBanco
 
 	/**
 	Metodo de para curtir a postagem
-	caso o usuario ja tenha interagido com a postagem ele só vai alterar o estado do like
-	0 não curtido e 1 pra curtido
+	* Será inserido o id do usuario que curtiu e a id do post que foi curtido
+	* Caso o usuario ja tenha curtido a postagem antes, só vai alterar o estado do like
+	* 0: para não curtido
+	* 1: pra curtido
 	*/
 	public function curtirPost()
 	{
@@ -136,7 +146,13 @@ class PostagemModel extends ConectarBanco
 			echo "ERROR:Camada: Model<br>Arquivo: ".__FILE__."<br>Metodo: ".__FUNCTION__."<br>".$error;
 		}
 	}
-
+	/**
+	* Esse metodo serve para verificar se o usuario ja curtiu uma postagem antes e ver se ele 			ja curtiu ou não 
+	* Será executado pelo metodo curtirPost()
+	* Assim curtir ou descurtir a postagem dependendo do que esse metodo retornará
+	* No caso do usuario nunca ter interagido ele retornará false
+	* No caso de ja ter interagido ele vai verificar se a postagem está curtida ou não
+	*/
 	private function isInteragido()
 	{
 		$st_query = "SELECT nr_like FROM interacao_post WHERE fk_cd_postagem = $this->id and fk_cd_usuario = $this->id_user;";
@@ -166,8 +182,10 @@ class PostagemModel extends ConectarBanco
 			echo "ERROR:Camada: Model<br>Arquivo: ".__FILE__."<br>Metodo: ".__FUNCTION__."<br>".$error;
 		}
 	}
-	/*Metodo para inserir o total de likes de uma postagem*/
-	//
+	/**
+		Metodo para inserir o Total de likes
+	* Ele fará um update com Select onde esse Select irá pegar todo o total 
+	*/
 	private function calcularCurtidas()
 	{
 		$total = "(SELECT COUNT(nr_like) FROM interacao_post WHERE fk_cd_postagem = $this->id and nr_like = 1)";
@@ -185,9 +203,12 @@ class PostagemModel extends ConectarBanco
 		}
 	}
 
-	//Aki será onde todas as informações da postagem serão renderisadas
-	//O texto do postagem,o total de curtidas,o nome do usuario que fez o post
-	//Se as postagens foram curtidas pelo usuario logado,e os comemtarios
+	/**
+		* Metodo para listar todas as informações das postagens incluindo os comentarios
+		* Ele selecionará o codigo,o texto, total de like, e o nome de usuario que fez a postagem
+		* As informações dos comentarios referentes ao post
+		* E também se ele foi curtido para assim renderiaar os botão de like selecionado
+	*/
 	public function listar()
 	{
 		$v_postagem = [];
@@ -227,10 +248,14 @@ class PostagemModel extends ConectarBanco
 		return $v_postagem;
 	}
 
-	//Este metodo servirá para mostrar se a postagem ja foi curtida ou não pelo usuario logado
-	//Ele irá selecionar a id da postagem e o numero do like(0 para nao curtido e 1 para curtido)
-	//e essa chave estrangeira será a id do usuario logado
-	//ele retornara um array com objetos
+
+	/**
+	 * Metodo que identificará se a postagem ja foi curtida ou não pelo usuario logado
+	 * para renderizar o like ja selecionado na pagina
+	 * Ele irá selecionar a id da postagem e o numero do like(0 para nao curtido e 1 para curtido)
+	 * e essa chave estrangeira será a id do usuario logado
+	 * Retornará um vetor contendo os objetos do like igual a 1(ja curtido) para se juntar as outras informações no metodo listar()
+	 */
 	private function postsCurtidos()
 	{
 		$v_postagem = [];
@@ -254,10 +279,15 @@ class PostagemModel extends ConectarBanco
 		return $v_postagem;
 	}
 
-	/*$st_query = "SELECT nr_like FROM interacao_post JOIN tb_usuario on tb_usuario.cd_usuario = interacao_post.fk_cd_usuario WHERE fk_cd_postagem = $this->id and fk_cd_usuario = $this->usuario->getId();"*/
+	/**
+	 * Metodo para deletar uma postagem
+	 * deletará todas a informações referente a curtida na tabela interacao_post
+	 * e depois deletará a postagem na tabela principal
+	 */
 	public function delete()
 	{
-		$st_query = "DELETE FROM tb_postagem WHERE cd_postagem = $this->id";
+		$st_query = "DELETE FROM interacao_post WHERE fk_cd_postagem = $this->id;";
+		$st_query .= "DELETE FROM tb_postagem WHERE cd_postagem = $this->id";
 		try
 		{
 			if($this->con->exec($st_query))
@@ -270,10 +300,11 @@ class PostagemModel extends ConectarBanco
 			echo "ERROR:Camada: Model<br>Arquivo: ".__FILE__."<br>Metodo: ".__FUNCTION__."<br>".$error;
 		}
 	}
-	//Metodo para selecionar as informações de um pot especifico
+
+	//Metodo para selecionar as informações de um post especifico
 	public function loadById($id)
 	{
-		$st_query = "SELECT * FROM tb_postagem WHERE cd_postagem = $id";
+		$st_query = "SELECT * FROM tb_postagem WHERE cd_postagem = $id;";
 		try
 		{
 			$dados = $this->con->query($st_query);

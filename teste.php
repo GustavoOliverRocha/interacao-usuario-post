@@ -15,14 +15,25 @@ class teste extends ConectarBanco
     $dados = $this->con->query($st_query);
     $sonic = $dados->fetchObject();
     echo $sonic->nm_usuario;*/
-    $u = new PostagemModel();
-    $asuna = $u->listar();
+   /* $u = new PostagemModel();
+    $asuna = $u->listar();*/
+    echo "Sonic";
+    return true;
+  }
+  public function bbb()
+  {
+    return false;
   }
 }
-$u = new PostagemModel();
+/*$u = new PostagemModel();
 $u->setIdUser(2);
 $e = $u->listar();
-echo $e[0]->getConteudo();
+echo $e[0]->getConteudo();*/
+$t = new Teste();
+if($t->bbb() && $t->aaa())
+  echo 'foda';
+else
+  echo 'não foda';
 ?>
 
 

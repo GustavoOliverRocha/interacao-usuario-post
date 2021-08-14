@@ -1,0 +1,22 @@
+<!-- Div do Botão de Curtida -->
+<div class="row row-cols-auto">
+	<div class="col">
+
+		<!--Dependendo se o usuario curtiu ou não a postagem ele vai renderizar uma
+			das aberturas da tag button -->
+		<?php if($postagem->getNum_Like() == 1){?>
+
+		<!-- Se o usuario ja curtiu o botão aparecerá ativo-->
+		<button class="btn btn-outline-primary curtir active" id="curtir<?php echo $postagem->getId();?>" data-bs-toggle="tooltip" data-bs-placement="top" title="Usuarios" value="<?php echo $postagem->getId();?>">
+
+		<?php } else{ ?>
+		<!-- Caso não, ele ficará normal -->
+		<button class="btn btn-outline-primary curtir" id="curtir<?php echo $postagem->getId();?>" data-bs-toggle="tooltip" data-bs-placement="top" title="Usuarios" value="<?php echo $postagem->getId();?>">
+		<?php }?>
+		
+		<!-- Resto do botão onde aparecerá o total -->
+			<i class="bi-hand-thumbs-up-fill" ></i>
+			<?php echo $postagem->getTotLike(); ?>
+		</button>
+	</div>
+</div>

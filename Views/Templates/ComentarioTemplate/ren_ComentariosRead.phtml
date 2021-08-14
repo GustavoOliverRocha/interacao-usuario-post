@@ -1,0 +1,27 @@
+<div class="row bg-dark" id="divComment<?php echo $c->getId(); ?>">
+	<div class="col-2">
+				<?php if($c->getUserId() == $_SESSION['id_user']){ ?>
+				<img src="Views/img/usuarioPrincipal.png" width="50px" height="50px">
+				<?php } else{ ?>
+				<img src="Views/img/outrosUsuarios.png" width="50px" height="50px">
+				<?php } ?>
+	</div>
+
+	<div class="col-8 text-light">
+		<div class="sonic" >
+			<h6 id="nomeuser">
+				<?php echo $c->getUsuario()->getNome();?>	
+			</h6>
+			<p class="nm_coment" id="com_ren_<?php echo $c->getId(); ?>">
+				<?php echo $c->getComentario(); ?> 
+			</p>
+			<?php if($c->getUserId() == $_SESSION['id_user']){ 
+				require "./Views/Templates/ComentarioTemplate/ren_ComentarioDivEdit.phtml";
+
+				}?>
+		</div>
+	</div>
+	<?php if($c->getUserId() == $_SESSION['id_user']){ 
+		require "./Views/Templates/ComentarioTemplate/ren_ComentarioButtonEdit.phtml";
+	}?>
+</div>

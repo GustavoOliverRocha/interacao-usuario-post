@@ -86,6 +86,9 @@ class UsuarioModel extends ConectarBanco
 			if(!$registros)
 				return false;
 
+			//Aparentemente o SQL não ta sendo case sensitive então não ta dando para
+			//Fazer a comparação no banco mesmo
+			//Então temos que comparar ele no PHP mesmo
 			else if($this->nome == $registros->nm_usuario && 
 						$this->senha == $registros->senha_usuario)
 			{

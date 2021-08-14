@@ -11,8 +11,29 @@
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
 	<style type="text/css">
+		body{
+			background: #1c1e21;
+		}
 		textarea{
 			resize: none;
+		}
+		img{
+			background: grey;
+			border-radius: 8px;
+			border-color: black;
+		}
+		.row
+		{
+			color: grey;
+			
+		}
+		.postagem
+		{
+			border-style: solid;
+			border-width: 10px;
+			border-radius: 8px;
+			border-color: rgba(0, 0, 0, 0%);
+			background: rgba(0, 0, 0, 0.4);
 		}
 	</style>
 	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
@@ -20,180 +41,59 @@
 	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
 </head>
 
-
 <body>
 <?php require_once 'Templates/navbar.php'; ?>
+
 <div id="success"></div>
 
 <div class="container" id="main">
-	<!-- Contendo toda a pagina -->
 	<div class="col-8">
 
-		<!-- Div para manterPostagem -->
+		<!-- Div para inserção de uma postagem -->
 		<div class="row " id="user_insert_post">
 			<div class="col-1">
-				<img src="https://blogtectoy.com.br/wp-content/uploads/2020/02/sonic-the-hedgehog-2020-3.jpg" width="50px" height="50px">
+				<img src="Views/img/usuarioPrincipal.png" width="50px" height="50px">
 			</div>
 			<div class="col-7">
-				<textarea  class="form-control" placeholder="Que se ta pensando amigo?" aria-label="With textarea" rows="2" name="postagem" id="postagem" style="font-size: 27px;resize: none;">	
-				</textarea>
+				<!--A tag </textarea> não pode ter espaços entre a abertura e o fechamento
+				senão na pagina ela terá espaços em branco -->
+				<textarea  class="form-control" placeholder="Que se ta pensando amigo?" rows="2" name="postagem" id="postagem" style="font-size: 27px;"></textarea>
 				<button id="postar" class="btn btn-primary">Postar</button>
 			</div>
 		</div>
-		<!-- Div para manterPostagem -->
 
 <!-- Renderização das Postagens junto com os Comentarios-->
 <?php foreach ($homura as $postagem) { ?>
 
-		<div class="row">
+		<div class="row postagem">
 
-			<!-- Div da imagem e o nome de usuario no post-->
-			<?php require "Templates/post_header.php"; ?>
+			<!-- Div da foto,o nome de usuario, e talvez o botão de editar e deletar-->
+			<?php require "Templates/PostagemTemplate/PostagemHeader.php"; ?>
 
-			<!--Conteudo do Post -->
+			<!--Conteudo da Postagem -->
 			<div class="row">
-				<p><?php echo $postagem->getConteudo(); ?></p>	
+				<p id="txtPost<?php echo $postagem->getId(); ?>"><?php echo $postagem->getConteudo(); ?></p>	
 			</div>
 
 			<!-- Div do Botão de Curtida-->
-			<?php require "Templates/like_Post.phtml"; ?>
+			<?php require "Templates/PostagemTemplate/PostagemLikeDiv.phtml"; ?>
 
-			<!--Area de Inserção do Comentario -->
-			<?php require "Templates/comment_Post.phtml"; ?>
+			<!--Area de Inserção do Comentario e exibição dos comentarios -->
+			<?php require "Templates/PostagemTemplate/PostagemComentariosDiv.phtml"; ?>
 
-		<?php echo "<br><hr><br><br>";} ?>
+<?php echo "<br><hr><br><br>";} ?>
 		</div>	
 	</div>
+	
+<!-- Modal de edição da postagem e outro contendo um Modal vazio que servirá para
+	exibir todos os comentarios de uma postagem  ja que na principal só aparecerá 5 -->
+<?php require_once "Templates/PostagemTemplate/PostagemModalEdit.php"; ?>
 
-<?php require_once "Templates/modalPost.php"; ?>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
-<script type="text/javascript">
-
-	$('.curtir').click(function(){
-    	let id_post = $(this).val();
-    	let str = document.getElementById("curtir" + id_post).className;
-    	let teste = str.substr(str.indexOf("active"));
-
-          $.ajax({
-          		type:'POST',
-                url: '?classe=Postagem&metodo=curtirPostagem',
-                data: {
-                	id_post:$(this).val()
-                },
-                success: function (result){
-                	if(result != '')
-                	{
-                		$("#curtir" + id_post).html("<i class=\"bi-hand-thumbs-up-fill\" ></i>&nbsp"+result);
-		                if(teste === "active")
-		                   	$("#curtir" + id_post).removeClass('active');
-		                else
-		                   	$("#curtir" + id_post).addClass('active');
-                	}
-
-                }
-            });
-	});
-
-	$('#postar').click(function(){
-		$.ajax({
-			type:'POST',
-			url: '?classe=Postagem&metodo=manterPostagem',
-			data:{
-				nm_postagem:$("#postagem").val()
-			},
-			success: function(result)
-			{
-				if(result != '')
-					location.reload();//document.getElementById('success').innerHTML = result;
-				else if(result == 'false')
-					document.getElementById('success').innerHTML = result;
-			}
-		});
-	});
-$('.editarPostagem').click(function(){
-	let id_post = $(this).val();
-	let val;
-	let content;
-	console.log(id_post);
-			$.ajax({
-			type:'POST',
-			url: '?classe=Postagem&metodo=mostrarPost',
-			data:{
-				id_postagem:id_post
-			},
-			success: function(result)
-			{
-				if(result != '')
-				{
-					//location.reload();//document.getElementById('success').innerHTML = result;
-					//$('#ppp').append(result);
-					val = result.substr(0,result.indexOf(","));
-					content = result.substr(result.indexOf(",")+1,result.length).trim();
-					document.getElementById("postEditavel").value = content;
-					document.getElementById("updatePost").value = val;
-					//$("#updatePost").val() = val;
-				}
-				else if(result == 'false')
-					document.getElementById('success').innerHTML = result;
-			}
-		});
-
-});
-	$('#updatePost').click(function(){
-		$.ajax({
-			type:'POST',
-			url: '?classe=Postagem&metodo=manterPostagem&id_postagem=' + $(this).val(),
-			data:{
-				nm_postagem:$("#postEditavel").val()
-			},
-			success: function(result)
-			{
-				if(result != '')
-					document.getElementById('success').innerHTML = result;
-				else if(result == 'false')
-					document.getElementById('success').innerHTML = result;
-			}
-		});
-	});
-	$('.comentar').click(function(){
-		let id_post = $(this).val();
-		$.ajax({
-			type:'POST',
-			url: '?classe=Comentario&metodo=manterComentario',
-			data:{
-				id_post: id_post,
-				comment: $("#comment"+ id_post ).val(),
-			},
-			success: function(result)
-			{
-				if(result != '')
-				{	
-					document.getElementById('comentariosPost'+ id_post).innerHTML = "";
-					document.getElementById('comentariosPost'+ id_post).innerHTML = result;
-				}
-			}
-
-		});
-	});
-
-	$('.mostrarComments').click(function(){
-
-		$.ajax({
-			type:'POST',
-			url: '?classe=Comentario&metodo=exibirComentarios',
-			data:{
-				id_post: $(this).val(),
-			},
-			success:function(result)
-			{
-				if(result != '')
-					document.getElementById('fullComment').innerHTML = result;
-			}
-		});
-	});
-
-</script>
+<script src="Views/js/PostagemJsFunctions.js"></script>
+<script src="Views/js/ComentariosJsFunctions.js"></script>
+<script src="Views/js/Ren_ComentariosJsFunctions.js"></script>
 
 </body>
 </html>

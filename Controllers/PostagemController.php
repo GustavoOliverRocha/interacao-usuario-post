@@ -3,13 +3,16 @@ if(file_exists('./Models/PostagemModel.php'))
 	require_once './Models/PostagemModel.php';
 else
 {
-	/*Por algum motivo quando o Ajax executa um script PHP
-	ele não reconheçe 'um ponto' como um recuo de diretorio/pasta
-	mas sim 'dois pontos'*/
+	/**
+		*Por algum motivo quando o Ajax executa um script PHP
+		ele não reconheçe 'um ponto' como um recuo de diretorio(pasta)
+		mas sim 'dois pontos'
+	*/
 	require_once '../Models/PostagemModel.php';
 }
 require_once './Libs/ViewRender.php';
 require_once './Models/ComentarioModel.php';
+
 class PostagemController
 {
 
@@ -39,26 +42,26 @@ class PostagemController
 		{
 			$obj_post = new PostagemModel();
 			$obj_post2 = new PostagemModel();
+
 			if(isset($_REQUEST['id_postagem']))
 			{
-				$obj_post->setId($_REQUEST['id_postagem']);
 				$obj_post2->loadById($_REQUEST['id_postagem']);
+
+				if($obj_post2->getIdUser() == $_SESSION['id_user'])
+					$obj_post->setId($_REQUEST['id_postagem']);
 			}
 
 			$obj_post->setIdUser($_SESSION['id_user']);
 			$obj_post->setConteudo(chop($_POST['nm_postagem']," "));
-			if($obj_post->save() && $obj_post2->getIdUser() == $_SESSION['id_user'])
-			{
+
+			if($obj_post->save())
 				echo "<div class=\"alert alert-success\" role=\"alert\">
   							Postagem postada com sucesso
 						</div>";
-			}
 			else
-			{
 				echo '<div class="alert alert-danger" role="alert">
   						ERROR: A postagem nao foi postada
 					</div>';
-			}
 		}
 
 	}
@@ -80,14 +83,33 @@ class PostagemController
 			$obj_post = new PostagemModel();
 			$obj_post->setId($_POST['id_post']);
 			$obj_post->setIdUser($_SESSION['id_user']);
-			//echo $_GET['sonic'];
-			//$p->setNum_like($_GET['like']);
-			if($obj_post->curtirPost())
+
+			if($obj_post->getIdUser() == $_SESSION['id_user'] && $obj_post->curtirPost())
 				echo $obj_post->loadById($obj_post->getId())->getTotLike() ;
 			else
 				echo '<div class="alert alert-danger" role="alert">
   						ERROR: Like nao funcionou
 					</div>';
+		}
+	}
+
+	public function deletarPostagem()
+	{
+		if(isset($_GET['id_post']) && DataValidator::isLogado())
+		{
+			$obj_comment= new ComentarioModel();
+			$deletar = $obj_comment->exibir($_GET['id_post']);
+
+			foreach($deletar as $d)
+				$d->delete();
+
+			$obj_post = new PostagemModel();
+			$obj_post->loadById($_GET['id_post']);
+
+			if($obj_post->getIdUser() == $_SESSION['id_user'] && $obj_post->delete())
+				echo "Sucesso";
+			else
+				echo "falha";
 		}
 	}
 }

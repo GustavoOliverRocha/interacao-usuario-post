@@ -1,7 +1,10 @@
 <?php
 require_once 'ConectarBanco.php';
 require_once 'UsuarioModel.php';
-
+/**Classe responsavel pelas informações do comentario da postagem
+  * $comentario: Responsavel pelo texto da postagem
+  *
+*/
 class ComentarioModel extends ConectarBanco
 {
 	private $id;
@@ -77,13 +80,19 @@ class ComentarioModel extends ConectarBanco
 
 		return false;
 	}
-	//Pegando os comentarios de uma postagem especifica o parametro desse metodo sera a id do post
-	//o id,o texto,o nome do usuario que escreveu
-	//
+
+	/**
+	 *
+	 * Metodo para exibir os comentarios de uma postagem em especifico
+	 * o parametro desse metodo sera a id do post
+	 * retornará um vetor contendo o id,o comentario(texto),a id do usuario que fez o comentarios
+	 * e o nome dele
+	 *
+	 */
 	public function exibir($id)
 	{
 		$v_comentarios = [];
-		$st_query = "SELECT cd_comentario, nm_comentario, nm_usuario FROM comentarios JOIN tb_usuario on tb_usuario.cd_usuario = comentarios.fk_cd_usuario WHERE fk_cd_postagem = $id ORDER by cd_comentario desc;";
+		$st_query = "SELECT cd_comentario, nm_comentario, nm_usuario,fk_cd_usuario FROM comentarios JOIN tb_usuario on tb_usuario.cd_usuario = comentarios.fk_cd_usuario WHERE fk_cd_postagem = $id ORDER by cd_comentario desc;";
 
 		try
 		{
@@ -94,6 +103,7 @@ class ComentarioModel extends ConectarBanco
 				$obj_comment = new ComentarioModel();
 				$obj_comment->setId($registros->cd_comentario);
 				$obj_comment->setComentario($registros->nm_comentario);
+				$obj_comment->setUserId($registros->fk_cd_usuario);
 				$obj_comment->usuario->setNome($registros->nm_usuario);
 				array_push($v_comentarios, $obj_comment);
 			}
@@ -107,28 +117,50 @@ class ComentarioModel extends ConectarBanco
 
 	}
 
-	public function atualizarComentarios()
+	/**
+	 * Deletar uma postagem
+	 */
+	public function delete()
 	{
-		$i = 0;
-		$v_comentarios = $this->exibir($this->post_id);
-		foreach($v_comentarios as $c)
+		if(isset($this->id))
 		{
-			if($i == 5)
-				break;
-			echo "<div class=\"row\">
-					<div class=\"col-1\">
-						<img src=\"https://blogtectoy.com.br/wp-content/uploads/2020/02/sonic-the-hedgehog-2020-3.jpg\" width=\"50px\" height=\"50px\">
-					</div>
-					<div class=\"col-10\">
-							<div>
-						<h6 id=\"nomeuser\">".$c->getUsuario()->getNome()."</h6>
-				
-						<p> ".$c->getComentario(). "</p>
-							</div>
-					</div>
+			$st_query = "DELETE FROM comentarios WHERE cd_comentario = $this->id";
+			try
+			{
+				if($this->con->exec($st_query) > 0)
+					return true;
+				else
+					return false;
+			}
+			catch(PDOException $error)
+			{
+				echo "ERROR: ";
+			}
 
-				</div>";
-			$i++;
 		}
+	}
+
+	/**
+	 * Inserir as informações de uma postagem espeficifica em um objeto
+	 */
+	public function loadById($id)
+	{
+		$st_query = "SELECT * FROM comentarios WHERE cd_comentario = $id;";
+		try
+		{
+			$dados = $this->con->query($st_query);
+			$registros = $dados->fetchObject();
+			$this->setId($registros->cd_comentario);
+			$this->setComentario($registros->nm_comentario);
+			$this->setUserId($registros->fk_cd_usuario);
+			$this->setPostId($registros->fk_cd_postagem);
+			return $this;
+			
+		}
+		catch(PDOException $error)
+		{
+			echo "ERROR";
+		}
+		return $this;
 	}
 }

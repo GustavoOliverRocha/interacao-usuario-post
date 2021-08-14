@@ -1,0 +1,13 @@
+<div class="col-1">
+	<button type="button" class="btn btn-outline-secondary  dropdown-toggle"  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+		<i class="bi bi-three-dots-vertical" ></i>
+	</button>
+	<div class="dropdown-menu">
+		<button class="dropdown-item editarComent" id="btn_edit_comment<?php echo $c->getId(); ?>" onclick="editarC(this)" value="<?php echo $c->getId(); ?>">
+			Editar
+		</button>
+		<button class="dropdown-item deletarComment" onclick="deletarC(this)" value="<?php echo $c->getId(); ?>">
+			Deletar
+		</button>
+  	</div>
+</div>

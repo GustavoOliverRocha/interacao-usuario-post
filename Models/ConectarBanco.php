@@ -3,7 +3,7 @@
 abstract class ConectarBanco
 {
 	private $server = "localhost"; 
-	private $db_name= "db_postagem";
+	private $db_name= "db_post";
 	private $user = "root";
 	private $password = "";
 	protected $con;

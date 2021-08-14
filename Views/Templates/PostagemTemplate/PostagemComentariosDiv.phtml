@@ -1,0 +1,76 @@
+	<!--Area de Inserção do Comentario e exibição dos comentarios -->
+	<div class="row">
+		<textarea class="comment" cols="5" rows="5" id="comment<?php echo $postagem->getId(); ?>" name="comment" placeholder="Escreva um Comentario..."></textarea>
+	</div>
+	<div class="row">
+		<div class="col-1 right">
+			<button class="btn btn-outline-primary comentar" value="<?php echo $postagem->getId(); ?>">
+				Comentar
+			</button>
+		</div>
+	</div>
+
+	<!-- Atribuindo o vetor contendo os comentarios do post em objetos-->
+	<?php $comentarios = $postagem->getCommentPost(); ?>
+
+	<!-- Div dos Comentarios -->
+	<div id="comentariosPost<?php echo $postagem->getId();  ?>">
+
+		<?php for($i=0; $i<5; $i++) { 
+			if(isset($comentarios[$i])){
+		?>			
+ 		<div class="row" id="divComment<?php echo $comentarios[$i]->getId(); ?>">
+
+			<div class="col-1">
+				<?php if($comentarios[$i]->getUserId() == $_SESSION['id_user']){ ?>
+				<img src="Views/img/usuarioPrincipal.png" width="50px" height="50px">
+				<?php } else{ ?>
+				<img src="Views/img/outrosUsuarios.png" width="50px" height="50px">
+				<?php } ?>
+			</div>
+
+			<div class="col-10">
+				<div class="sonic" >
+					<h6 id="nomeuser">
+							<?php echo $comentarios[$i]->getUsuario()->getNome();?>	
+					</h6>
+					<p class="nm_coment" id="<?php echo 'c'.$comentarios[$i]->getId(); ?>"> 	<?php echo $comentarios[$i]->getComentario(); ?> 
+					</p>
+		<?php if($comentarios[$i]->getUserId() == $_SESSION['id_user']){ ?>
+					<div class="col-7" style="display: none;" id="divEdit<?php echo $comentarios[$i]->getId(); ?>">
+						<div class="row">
+						<textarea id='commentEdit<?php echo $comentarios[$i]->getId(); ?>' ></textarea>
+						</div>
+						<div class="col-5 right">
+							<button class='cancelarEdit' value="<?php echo $comentarios[$i]->getId(); ?>">Cancelar</button>
+							<button class='updateComment' value="<?php echo $comentarios[$i]->getId(); ?>">Salvar</button>
+						</div>
+					</div>
+		<?php } ?>
+				</div>
+			</div>
+		<?php if($comentarios[$i]->getUserId() == $_SESSION['id_user']){ ?>
+			<div class="col-1">
+				<button type="button" class="btn btn-outline-secondary  dropdown-toggle"  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+				<i class="bi bi-three-dots-vertical" ></i>
+				</button>
+				<div class="dropdown-menu">
+				    <button class="dropdown-item editarComent" value="<?php echo $comentarios[$i]->getId(); ?>">
+				    	Editar
+					</button>
+				    <button class="dropdown-item deletarComment" value="<?php echo $comentarios[$i]->getId(); ?>">
+				    	Deletar
+				    </button>
+					</div>
+			</div>
+		<?php } ?>
+		</div>
+			<?php }?>
+		<?php } ?>
+	</div>
+</div>
+<div class="row">
+	<button type="button" class="btn btn-primary mostrarComments" value="<?php echo $postagem->getId(); ?>"  data-toggle="modal" data-target="#exampleModal">
+		Mostrar Mais
+	</button>
+</div>

@@ -1,0 +1,13 @@
+<div class="col-7" style="display: none;" id="ren_divEdit<?php echo $c->getId(); ?>">
+	<div class="row">
+		<textarea id='ren_commentEdit<?php echo $c->getId(); ?>' value=""></textarea>
+	</div>
+	<div class="col-7 right">
+		<button class='cancelarEdit' onclick="editarC2(this)" value="<?php echo $c->getId(); ?>">
+			Cancelar&#10008;
+		</button>
+		<button class='updateComment' onclick="editarC3(this)" value="<?php echo $c->getId(); ?>">
+			Salvar
+		</button>
+	</div>
+</div>
