@@ -52,7 +52,7 @@ class PostagemController
 			}
 
 			$obj_post->setIdUser($_SESSION['id_user']);
-			$obj_post->setConteudo(chop($_POST['nm_postagem']," "));
+			$obj_post->setConteudo(DataValidator::cleanData($_POST['nm_postagem']," "));
 
 			if($obj_post->save())
 				echo "<div class=\"alert alert-success\" role=\"alert\">

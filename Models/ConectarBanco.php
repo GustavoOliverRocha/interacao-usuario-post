@@ -23,6 +23,7 @@ abstract class ConectarBanco
         catch( PDOException $error)
         {
         	echo 'A conexão com a base de dados falhou<br><br>'.$error;
+        	exit;
         }
 	}
 

@@ -24,7 +24,7 @@ class ComentarioController
 			if(isset($_POST['id_comment']))
 				$obj_comment->setId($_POST['id_comment']);
 
-			$obj_comment->setComentario($_POST['comment']);
+			$obj_comment->setComentario(DataValidator::cleanData($_POST['comment']));
 			$obj_comment->setUserId($_SESSION['id_user']);
 			$obj_comment->setPostId($_POST['id_post']);
 
@@ -64,7 +64,7 @@ class ComentarioController
 		{
 			$obj_comment = new ComentarioModel();
 			$obj_comment->loadById($_POST['id_comment']);
-			$obj_comment->setComentario($_REQUEST['comment']);
+			$obj_comment->setComentario(DataValidator::cleanData($_REQUEST['comment']));
 
 			/**
 			 * Verificando se o comentario realmente pertence ao usuario

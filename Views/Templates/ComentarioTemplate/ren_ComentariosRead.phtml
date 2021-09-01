@@ -1,13 +1,13 @@
-<div class="row bg-dark" id="divComment<?php echo $c->getId(); ?>">
-	<div class="col-2">
-				<?php if($c->getUserId() == $_SESSION['id_user']){ ?>
-				<img src="Views/img/usuarioPrincipal.png" width="50px" height="50px">
-				<?php } else{ ?>
-				<img src="Views/img/outrosUsuarios.png" width="50px" height="50px">
-				<?php } ?>
+<div class="row" id="divComment<?php echo $c->getId(); ?>">
+	<div class="col-1">
+		<?php if($c->getUserId() == $_SESSION['id_user']){ ?>
+		<img src="Views/img/usuarioPrincipal.png" width="50px" height="50px">
+		<?php } else{ ?>
+		<img src="Views/img/outrosUsuarios.png" width="50px" height="50px">
+		<?php } ?>
 	</div>
 
-	<div class="col-8 text-light">
+	<div class="col-10 text-light">
 		<div class="sonic" >
 			<h6 id="nomeuser">
 				<?php echo $c->getUsuario()->getNome();?>	

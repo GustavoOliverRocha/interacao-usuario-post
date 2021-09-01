@@ -116,6 +116,7 @@ class PostagemModel extends ConectarBanco
 		catch(PDOException $error)
 		{
 			echo "ERROR:Camada: Model<br>Arquivo: ".__FILE__."<br>Metodo: ".__FUNCTION__."<br>".$error;
+			exit;
 		}
 	}
 

@@ -37,6 +37,7 @@ function editarC2($e)
 }
 function editarC3($e)
 {
+	
 //Lembre aparentemente o $(this).val() ele tem um escopo
 //Por isso o document.getElementById estava dando erro
 let id_com = $($e).val();

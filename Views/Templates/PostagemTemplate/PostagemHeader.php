@@ -1,7 +1,12 @@
 <!-- Nesta div contem a foto do usuario,o nome dele -->
 <div class="row">
 	<div class="col-1">
+		<?php if($postagem->getIdUser() == $_SESSION['id_user']){ ?>
+
+		<img src="Views/img/usuarioPrincipal.png" width="50px" height="50px">
+	<?php }else{ ?>
 		<img src="Views/img/outrosUsuarios.png" width="50px" height="50px">
+	<?php } ?>	
 	</div>
 	<div class="col-10">
 		<h6 id="nomeuser">
