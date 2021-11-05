@@ -35,11 +35,11 @@ constraint fk_postagem_coment foreign key(fk_cd_postagem) references tb_postagem
 
 insert into tb_usuario(nm_usuario,senha_usuario) values ('admin','admin'),
 	('Madoka','admin'),('Homura','admin'),('Mami','admin'),
-	('Jeanne','admin'),('Kazumi','admin'),('Kuroe','admin'),
-	('Suzune','admin'),('Oriko','admin'),('Iroha','admin');
+	('Jeanne','admin'),('Maria','admin'),('Kuroe','admin'),
+	('Suzune','admin'),('Antonio','admin'),('Juao','admin');
 
 insert into tb_postagem(nm_conteudo,tot_like,fk_cd_usuario) values
-('Anunciado um novo filme de Madoka: Puella Magi Madoka Magica: Mikuni Oriko no Monogatari; O elenco sera: Hayami Saori: voz de Mikuni Oriko, Iguchi Yuka: voz de Kirika Kure, Mizuhashi Karoi: voz de Tomoe Mami, Ai Nonaka: voz de Kyoko, Misaki Kuno: voz de Chitose Yuma',0,1),
+('Anunciado um novo filme de Madoka: Puella Magi Madoka Magica: Mikuni Oriko no Monogatari;É isso ae galera pode comemorar',0,1),
 ('Fingir que n viu algo para que a pessoa nao se sinta desconfortavel e um nivel de empatia que todo mundo deveria ter',0,5),
 ('Ja vi gente bonita mas essa gente que ta lendo agr e linda demais',0,1),
 ('Antes de dormir coloque os chinelos na cama',0,7),
