@@ -1,16 +1,13 @@
 <!-- Nesta div contem a foto do usuario,o nome dele -->
 <div class="row">
 	<div class="col-1">
-		<?php if($postagem->getIdUser() == $_SESSION['id_user']){ ?>
 
-		<img src="Views/img/usuarioPrincipal.png" width="50px" height="50px">
-	<?php }else{ ?>
-		<img src="Views/img/outrosUsuarios.png" width="50px" height="50px">
-	<?php } ?>	
+
+	<?php echo '<img src="Views/img/fotosPerfil/'.$postagem->getIdUser().'/'.$postagem->getUsuario()->getNomeFoto().'" width="50px" height="50px">'; ?>
 	</div>
 	<div class="col-10">
 		<h6 id="nomeuser">
-			<?php echo $postagem->getUsuario()->getNome();?>
+			<?php echo $postagem->getUsuario()->getNomePessoal();?>
 		</h6>
 	</div>
 

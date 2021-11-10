@@ -22,17 +22,13 @@
  		<div class="row" id="divComment<?php echo $comentarios[$i]->getId(); ?>">
 
 			<div class="col-1">
-				<?php if($comentarios[$i]->getUserId() == $_SESSION['id_user']){ ?>
-				<img src="Views/img/usuarioPrincipal.png" width="50px" height="50px">
-				<?php } else{ ?>
-				<img src="Views/img/outrosUsuarios.png" width="50px" height="50px">
-				<?php } ?>
+				<?php echo '<img src="Views/img/fotosPerfil/'.$comentarios[$i]->getUserId().'/'.$comentarios[$i]->getUsuario()->getNomeFoto().'" width="50px" height="50px">'; ?>
 			</div>
 
 			<div class="col-10">
 				<div class="sonic" >
 					<h6 id="nomeuser">
-							<?php echo $comentarios[$i]->getUsuario()->getNome();?>	
+							<?php echo $comentarios[$i]->getUsuario()->getNomePessoal();?>	
 					</h6>
 					<p class="nm_coment" id="<?php echo 'c'.$comentarios[$i]->getId(); ?>"> 	<?php echo $comentarios[$i]->getComentario(); ?> 
 					</p>

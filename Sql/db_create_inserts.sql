@@ -3,6 +3,8 @@ use db_post;
 create table tb_usuario(
 	cd_usuario int not null auto_increment,
 	nm_usuario varchar(30),
+	nm_pessoal varchar(60),
+	nm_foto varchar(80),
 	senha_usuario varchar(30),
 	constraint pk_usuario primary key(cd_usuario)
 );
@@ -33,10 +35,11 @@ constraint fk_usuario_coment foreign key(fk_cd_usuario) references tb_usuario(cd
 constraint fk_postagem_coment foreign key(fk_cd_postagem) references tb_postagem(cd_postagem)
 );
 
-insert into tb_usuario(nm_usuario,senha_usuario) values ('admin','admin'),
-	('Madoka','admin'),('Homura','admin'),('Mami','admin'),
-	('Jeanne','admin'),('Kazumi','admin'),('Kuroe','admin'),
-	('Suzune','admin'),('Oriko','admin'),('Iroha','admin');
+insert into tb_usuario(nm_usuario,nm_pessoal,senha_usuario) values
+	('admin','Administrador','admin'),
+	('Madoka','Kaname Madoka','admin'),('Homura','Akemi Homura','admin'),('Mami','Tomoe Mami','admin'),
+	('Victor','vitin','admin'),('akietrabalho','Guilherme Simões','admin'),('Kuroe','Paulo Palestra','admin'),
+	('Suzune','Maria Luiza','admin'),('Orikomikuni','Karmila','admin'),('Iroha','João Dalsin','admin');
 
 insert into tb_postagem(nm_conteudo,tot_like,fk_cd_usuario) values
 ('Anunciado um novo filme de Madoka: Puella Magi Madoka Magica: Mikuni Oriko no Monogatari; O elenco sera: Hayami Saori: voz de Mikuni Oriko, Iguchi Yuka: voz de Kirika Kure, Mizuhashi Karoi: voz de Tomoe Mami, Ai Nonaka: voz de Kyoko, Misaki Kuno: voz de Chitose Yuma',0,1),

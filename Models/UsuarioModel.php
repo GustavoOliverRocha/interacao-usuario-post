@@ -7,7 +7,10 @@ class UsuarioModel extends ConectarBanco
 {
 	private $id;
 	private $nome;
+	private $nomePessoal;
 	private $senha;
+	private $nomeFoto;
+	public $img;
 
 	function __construct()
 	{
@@ -33,6 +36,16 @@ class UsuarioModel extends ConectarBanco
 		$this->nome = $nome;
 	}
 
+	public function getNomePessoal()
+	{
+		return $this->nomePessoal;
+	}
+
+	public function setNomePessoal($nome)
+	{
+		$this->nomePessoal = $nome;
+	}
+
 	public function getSenha()
 	{
 		return $this->senha;
@@ -40,6 +53,15 @@ class UsuarioModel extends ConectarBanco
 	public function setSenha($senha)
 	{
 		$this->senha = $senha;
+	}
+
+	public function getNomeFoto()
+	{
+		return $this->nomeFoto;
+	}
+	public function setNomeFoto($f)
+	{
+		$this->nomeFoto = $f;
 	}
 
 	public function listar()
@@ -63,7 +85,7 @@ class UsuarioModel extends ConectarBanco
 				{
 					$obj_user = new UsuarioModel();
 					$obj_user->setId($registros->cd_usuario);
-					$obj_user->setNome($registros->nm_usuario);
+					$obj_user->setNomePessoal($registros->nm_pessoal);
 					$obj_user->setSenha($registros->senha_usuario);
 					array_push($v_user, $obj_user);
 				}
@@ -94,6 +116,8 @@ class UsuarioModel extends ConectarBanco
 			{
 				$this->id = $registros->cd_usuario;
 				$this->nome = $registros->nm_usuario;
+				$this->nomePessoal = $registros->nm_pessoal;
+				$this->nomeFoto = $registros->nm_foto;
 				return true;
 			}
 			else
@@ -105,12 +129,31 @@ class UsuarioModel extends ConectarBanco
 		}
 	}
 
+	public function inserirFoto()
+	{
+		if(!isset($this->id))
+			$this->id = $this->con->lastInsertId();
+		
+		if(!isset($this->nomeFoto))
+			$this->nomeFoto = "default_user_pic_".$this->id.".png";
+		
+		//$diretorio = "Views/img/fotosPerfil/".$this->id."/".$this->nomeFoto;
+		$st_query = "UPDATE tb_usuario set nm_foto = '$this->nomeFoto' WHERE cd_usuario = ".$this->id;
+		if($this->con->exec($st_query) > 0)
+			return true;
+		else
+			return false;
+	}
+
 	public function inserir()
 	{
-		$st_query = "INSERT INTO tb_usuario(nm_usuario,senha_usuario) VALUES ('$this->nome','$this->senha');";
+		if(!isset($this->id))
+		{
+			$st_query = "INSERT INTO tb_usuario(nm_usuario,nm_pessoal,senha_usuario) VALUES ('$this->nome','$this->nomePessoal','$this->senha');";
+		}
 		try
 		{
-			if($this->con->exec($st_query) > 0)
+			if($this->con->exec($st_query) > 0 && $this->inserirFoto())
 				return true;
 			else
 				return false;

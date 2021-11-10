@@ -92,7 +92,7 @@ class ComentarioModel extends ConectarBanco
 	public function exibir($id)
 	{
 		$v_comentarios = [];
-		$st_query = "SELECT cd_comentario, nm_comentario, nm_usuario,fk_cd_usuario FROM comentarios JOIN tb_usuario on tb_usuario.cd_usuario = comentarios.fk_cd_usuario WHERE fk_cd_postagem = $id ORDER by cd_comentario desc;";
+		$st_query = "SELECT cd_comentario, nm_comentario, nm_pessoal,nm_foto,fk_cd_usuario FROM comentarios JOIN tb_usuario on tb_usuario.cd_usuario = comentarios.fk_cd_usuario WHERE fk_cd_postagem = $id ORDER by cd_comentario desc;";
 
 		try
 		{
@@ -104,7 +104,8 @@ class ComentarioModel extends ConectarBanco
 				$obj_comment->setId($registros->cd_comentario);
 				$obj_comment->setComentario($registros->nm_comentario);
 				$obj_comment->setUserId($registros->fk_cd_usuario);
-				$obj_comment->usuario->setNome($registros->nm_usuario);
+				$obj_comment->usuario->setNomePessoal($registros->nm_pessoal);
+				$obj_comment->usuario->setNomeFoto($registros->nm_foto);
 				array_push($v_comentarios, $obj_comment);
 			}
 		

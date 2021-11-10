@@ -213,7 +213,7 @@ class PostagemModel extends ConectarBanco
 	public function listar()
 	{
 		$v_postagem = [];
-		$st_query = "SELECT cd_postagem,nm_conteudo,tot_like,nm_usuario,fk_cd_usuario FROM tb_postagem JOIN tb_usuario on tb_usuario.cd_usuario = tb_postagem.fk_cd_usuario ORDER by cd_postagem desc;";
+		$st_query = "SELECT cd_postagem,nm_conteudo,tot_like,nm_pessoal,nm_foto,fk_cd_usuario FROM tb_postagem JOIN tb_usuario on tb_usuario.cd_usuario = tb_postagem.fk_cd_usuario ORDER by cd_postagem desc;";
 		try
 		{
 
@@ -229,7 +229,8 @@ class PostagemModel extends ConectarBanco
 				$obj_post->setConteudo($registros->nm_conteudo);
 				$obj_post->setIdUser($registros->fk_cd_usuario);
 				$obj_post->setTotLike($registros->tot_like);
-				$obj_post->usuario->setNome($registros->nm_usuario);
+				$obj_post->usuario->setNomePessoal($registros->nm_pessoal);
+				$obj_post->usuario->setNomeFoto($registros->nm_foto);
 
 				//Setando os posts que foram curtidos
 				foreach ($dados_curtidos as $p)
